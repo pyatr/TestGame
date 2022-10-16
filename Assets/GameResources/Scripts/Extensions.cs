@@ -19,6 +19,15 @@ public static class Extensions
         }
     }
 
+    public static void DestroyGameObjects<T>(this IList<T> gameObjectList) where T : Component
+    {
+        int objectCount = gameObjectList.Count;
+        for (int i = 0; i < objectCount; i++)
+        {
+            Object.Destroy(gameObjectList[i].gameObject);
+        }
+    }
+
     public static void MoveBy(this Transform originalTransform, float x = 0, float y = 0, float z = 0)
     {
         moveVector.x = originalTransform.localPosition.x + x;

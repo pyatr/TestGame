@@ -114,8 +114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09b245199ebd1f4198d80b594caf86f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentSpeed: 0
   minSpawnTime: 0.5
   maxSpawnTime: 1.5
   minMoveSpeed: 0.004
   maxMoveSpeed: 0.006
-  score: 0
+  score: 100

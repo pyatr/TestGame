@@ -6,13 +6,11 @@ using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(CircleCollider2D))]
-public class Balloon : MonoBehaviour, IPointerUpHandler
+public class Balloon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public static event Action<Balloon> OnBalloonDestroyed = delegate { };
+    public static event Action<Balloon> OnBalloonFlewAway = delegate { };
 
-    /// <summary>
-    /// —лучайное ожидание перед по€влением этого шарика
-    /// </summary>
     public float RandomSpawnTime => Random.Range(minSpawnTime, maxSpawnTime);
 
     public float Radius => balloonCollider.radius;
@@ -20,6 +18,10 @@ public class Balloon : MonoBehaviour, IPointerUpHandler
     public float Diameter => balloonCollider.radius * 2;
 
     public float RandomSpeed => Random.Range(minMoveSpeed, maxMoveSpeed);
+
+    public int Score => score;
+
+    public float CurrentSpeed;
 
     [SerializeField]
     protected float minSpawnTime = 1.2f;
@@ -37,8 +39,9 @@ public class Balloon : MonoBehaviour, IPointerUpHandler
     protected int score;
 
     protected CircleCollider2D balloonCollider;
+    protected SpriteRenderer spriteRenderer;
 
-    protected float currentSpeed;
+    private bool hasAppeared = false;
 
     protected virtual void Awake()
     {
@@ -47,21 +50,37 @@ public class Balloon : MonoBehaviour, IPointerUpHandler
 
     protected virtual void OnEnable()
     {
-        currentSpeed = RandomSpeed;
+        CurrentSpeed = RandomSpeed;
+        hasAppeared = false;
     }
 
-    public virtual void OnPointerUp(PointerEventData eventData)
-    {
-        FireDestroyedEvent();
-    }
-
-    protected void FireDestroyedEvent()
+    protected virtual void DestroySelf()
     {
         OnBalloonDestroyed.Invoke(this);
+        Destroy(gameObject);
     }
 
-    private void Update()
+    protected virtual void Update()
     {
-        transform.MoveBy(0, currentSpeed);
+        transform.MoveBy(0, CurrentSpeed);
+        if (spriteRenderer.isVisible)
+        {
+            hasAppeared = true;
+        }
+        else if (hasAppeared)
+        {
+            OnBalloonFlewAway.Invoke(this);
+            Destroy(gameObject);
+        }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        DestroySelf();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        // остыль чтобы OnPointerUp работал
     }
 }
