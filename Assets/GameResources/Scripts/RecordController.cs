@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RecordController : MonoBehaviour
@@ -13,22 +14,35 @@ public class RecordController : MonoBehaviour
 
     public void SaveRecord(string playerName, int score)
     {
-        PlayerPrefs.SetString(PLAYER_RECORDS_PREFS_KEY, $"{PlayerRecords}-");
+        PlayerPrefs.SetString(PLAYER_RECORDS_PREFS_KEY, $"{PlayerRecords}-{playerName}:{score}");
     }
 
-    public List<KeyValuePair<string, string>> GetPlayersRecords()
+    public List<KeyValuePair<string, int>> GetPlayersRecords()
     {
-        List<KeyValuePair<string, string>> preparedRecords = new List<KeyValuePair<string, string>>();
+        List<KeyValuePair<string, int>> preparedRecords = new List<KeyValuePair<string, int>>();
         string records = PlayerRecords;
-        if (records != string.Empty)
+        bool hasRecords = !string.IsNullOrEmpty(records);
+        if (hasRecords)
         {
             string[] splitRecords = records.Split(RECORDS_DELIMITER);
+
             foreach (string record in splitRecords)
             {
-                string[] recordData = record.Split(PLAYERS_DATA_DELIMITER);
-                preparedRecords.Add(new KeyValuePair<string, string>(recordData[0], recordData[1]));
+                if (!string.IsNullOrEmpty(record))
+                {
+                    string[] recordData = record.Split(PLAYERS_DATA_DELIMITER);
+                    if (recordData.Length > 1)
+                    {
+                        preparedRecords.Add(new KeyValuePair<string, int>(recordData[0], int.Parse(recordData[1])));
+                    }
+                    else
+                    {
+                        Debug.LogError($"error reading record [{record}]");
+                    }
+                }
             }
         }
-        return preparedRecords;
+        List<KeyValuePair<string, int>> sortedRecords = preparedRecords.OrderByDescending(key => key.Value).ToList();
+        return sortedRecords;
     }
 }

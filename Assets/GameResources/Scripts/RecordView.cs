@@ -11,16 +11,21 @@ public class RecordView : MonoBehaviour
 
     private List<SingleRecordView> displayedRecords = new List<SingleRecordView>();
 
+    [SerializeField]
+    private GameObject noRecordsObject;
+
     private void OnEnable()
     {
-        List<KeyValuePair<string, string>> records = recordController.GetPlayersRecords();
+        List<KeyValuePair<string, int>> records = recordController.GetPlayersRecords();
+        noRecordsObject.SetActive(records.Count == 0);
         if (records.Count > 0)
         {
-            foreach (KeyValuePair<string, string> record in records)
+            foreach (KeyValuePair<string, int> record in records)
             {
                 SingleRecordView singleRecordView = Instantiate(recordViewPrefab, contentTransform);
                 singleRecordView.PlayerNameText = record.Key;
-                singleRecordView.PlayerScoreText = record.Value;
+                singleRecordView.PlayerScoreText = record.Value.ToString();
+                displayedRecords.Add(singleRecordView);
             }
         }
     }
@@ -28,12 +33,6 @@ public class RecordView : MonoBehaviour
     private void OnDisable()
     {
         displayedRecords.DestroyGameObjects();
-        /*
-        int recordCount = displayedRecords.Count;
-        for (int i = 0; i < recordCount; i++)
-        {
-            Destroy(displayedRecords[i]);
-        }
-        */
+        displayedRecords.Clear();
     }
 }

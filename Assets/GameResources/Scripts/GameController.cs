@@ -3,16 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
     public static event Action OnGameStart = delegate { };
     public static event Action OnGameEnd = delegate { };
+    public static event Action<int> OnLifeCounterChanged = delegate { };
 
     private const float POSITION_TO_SCREEN_RATIO = 0.01f;
-
     private const int SPAWN_Y_OFFSET = -32;
+
+    private int Lives
+    {
+        get => lives;
+        set
+        {
+            lives = value;
+            OnLifeCounterChanged.Invoke(lives);
+        }
+    }
 
     private ObjectPool<Balloon> balloonPool;
 
@@ -73,9 +84,9 @@ public class GameController : MonoBehaviour
 
     private void DecreaseLifeCounter(Balloon balloon)
     {
-        lives--;
+        Lives--;
         activeBalloons.Remove(balloon);
-        if (lives <= 0)
+        if (Lives <= 0)
         {
             gameOverText.SetActive(true);
             StopGame();
@@ -84,6 +95,8 @@ public class GameController : MonoBehaviour
 
     private IEnumerator GameRoutine()
     {
+        yield return null;
+        Lives = startLifeCount;
         while (isActiveAndEnabled)
         {
             Balloon spawnedBalloon = balloonPool.Get();
@@ -99,7 +112,7 @@ public class GameController : MonoBehaviour
     {
         if (gameCoroutine == null)
         {
-            lives = startLifeCount;
+            gameOverText.SetActive(false);
             gameSpeed = startGameSpeed;
             gameCoroutine = StartCoroutine(GameRoutine());
             speedGrowth = StartCoroutine(SpeedGrowth());
@@ -112,8 +125,11 @@ public class GameController : MonoBehaviour
         if (gameCoroutine != null)
         {
             activeBalloons.DestroyGameObjects();
+            activeBalloons.Clear();
             StopCoroutine(gameCoroutine);
             StopCoroutine(speedGrowth);
+            gameCoroutine = null;
+            speedGrowth = null;
             OnGameEnd.Invoke();
         }
     }

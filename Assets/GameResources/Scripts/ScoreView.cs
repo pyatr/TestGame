@@ -3,16 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Text))]
-public class ScoreView : MonoBehaviour
+public class ScoreView : AbstractTextView
 {
-    private Text displayText;
-
-    private void Awake()
-    {
-        displayText = GetComponent<Text>();
-    }
-
     private void OnEnable()
     {
         ScoreController.OnScoreChanged += UpdateScore;
@@ -25,6 +17,6 @@ public class ScoreView : MonoBehaviour
 
     private void UpdateScore(int newScore)
     {
-        displayText.text = newScore.ToString();
+        viewText.text = newScore.ToString();
     }
 }

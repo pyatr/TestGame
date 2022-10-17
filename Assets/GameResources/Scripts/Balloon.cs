@@ -5,17 +5,16 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(CircleCollider2D))]
 public class Balloon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public static event Action<Balloon> OnBalloonDestroyed = delegate { };
     public static event Action<Balloon> OnBalloonFlewAway = delegate { };
 
+    private static byte orderInLayer=0;
+
     public float RandomSpawnTime => Random.Range(minSpawnTime, maxSpawnTime);
 
-    public float Radius => balloonCollider.radius;
-
-    public float Diameter => balloonCollider.radius * 2;
+    public float Diameter => diameter;
 
     public float RandomSpeed => Random.Range(minMoveSpeed, maxMoveSpeed);
 
@@ -36,21 +35,24 @@ public class Balloon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     protected float maxMoveSpeed = 0.15f;
 
     [SerializeField]
+    protected float diameter = 1f;
+
+    [SerializeField]
     protected int score;
 
-    protected CircleCollider2D balloonCollider;
     protected SpriteRenderer spriteRenderer;
 
     private bool hasAppeared = false;
 
     protected virtual void Awake()
     {
-        balloonCollider = GetComponent<CircleCollider2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     protected virtual void OnEnable()
     {
         CurrentSpeed = RandomSpeed;
+        spriteRenderer.sortingOrder = orderInLayer++;
         hasAppeared = false;
     }
 

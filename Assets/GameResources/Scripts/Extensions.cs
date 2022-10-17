@@ -24,7 +24,14 @@ public static class Extensions
         int objectCount = gameObjectList.Count;
         for (int i = 0; i < objectCount; i++)
         {
-            Object.Destroy(gameObjectList[i].gameObject);
+            if (gameObjectList[i])
+            {
+                Object.Destroy(gameObjectList[i].gameObject);
+            }
+            else
+            {
+                Debug.LogError($"Tried to destroy null object {i}");
+            }
         }
     }
 
