@@ -10,7 +10,9 @@ public class Balloon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public static event Action<Balloon> OnBalloonDestroyed = delegate { };
     public static event Action<Balloon> OnBalloonFlewAway = delegate { };
 
-    private static byte orderInLayer=0;
+    private static byte orderInLayer = 0;
+
+    public Animator Animator => animator;
 
     public float RandomSpawnTime => Random.Range(minSpawnTime, maxSpawnTime);
 
@@ -21,6 +23,9 @@ public class Balloon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public int Score => score;
 
     public float CurrentSpeed;
+
+    [SerializeField]
+    protected Animator animator;
 
     [SerializeField]
     protected float minSpawnTime = 1.2f;
@@ -64,7 +69,6 @@ public class Balloon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     protected virtual void Update()
     {
-        transform.MoveBy(0, CurrentSpeed);
         if (spriteRenderer.isVisible)
         {
             hasAppeared = true;
@@ -76,13 +80,28 @@ public class Balloon : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    protected virtual void FixedUpdate()
+    {
+        transform.MoveBy(0, CurrentSpeed);
+    }
+
+    protected virtual void OnUp(PointerEventData eventData)
     {
         DestroySelf();
     }
 
+    protected virtual void OnDown(PointerEventData eventData)
+    {
+
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        OnUp(eventData);
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        //Костыль чтобы OnPointerUp работал
+        OnDown(eventData);
     }
 }

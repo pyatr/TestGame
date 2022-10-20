@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
@@ -44,11 +43,15 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private int startLifeCount = 5;
 
+    [SerializeField]
+    private int scoreForExtraLife = 10000;
+
     private List<Balloon> activeBalloons = new List<Balloon>();
 
     private int spawnRangeX;
     private int spawnRangeY;
     private int lives = 0;
+    private int earnedLives = 0;
 
     private float startGameSpeed;
 
@@ -64,12 +67,24 @@ public class GameController : MonoBehaviour
     {
         Balloon.OnBalloonFlewAway += DecreaseLifeCounter;
         Balloon.OnBalloonDestroyed += ClearBalloonList;
+        ScoreController.OnScoreChanged += GiveLifeFromScore;
     }
 
     private void OnDisable()
     {
         Balloon.OnBalloonFlewAway -= DecreaseLifeCounter;
         Balloon.OnBalloonDestroyed -= ClearBalloonList;
+        ScoreController.OnScoreChanged -= GiveLifeFromScore;
+    }
+
+    private void GiveLifeFromScore(int newScore)
+    {
+        int totalEarned = newScore / scoreForExtraLife;
+        if (totalEarned > earnedLives)
+        {
+            Lives += (totalEarned - earnedLives);
+            earnedLives = totalEarned;
+        }
     }
 
     private void ClearBalloonList(Balloon balloon)
@@ -99,13 +114,18 @@ public class GameController : MonoBehaviour
         Lives = startLifeCount;
         while (isActiveAndEnabled)
         {
-            Balloon spawnedBalloon = balloonPool.Get();
-            spawnedBalloon.transform.position = new Vector2(Random.Range(-spawnRangeX + spawnedBalloon.Diameter / POSITION_TO_SCREEN_RATIO, spawnRangeX - spawnedBalloon.Diameter / POSITION_TO_SCREEN_RATIO), -spawnRangeY + SPAWN_Y_OFFSET) * POSITION_TO_SCREEN_RATIO;
-            spawnedBalloon.CurrentSpeed *= gameSpeed;
-            activeBalloons.Add(spawnedBalloon);
-            yield return new WaitForSeconds(spawnedBalloon.RandomSpawnTime);
+            Balloon spawned = SpawnBalloon(balloonPool.Get());
+            yield return new WaitForSeconds(spawned.RandomSpawnTime);
         }
         StopGame();
+    }
+
+    public Balloon SpawnBalloon(Balloon instance)
+    {
+        instance.transform.position = new Vector2(Random.Range(-spawnRangeX + instance.Diameter / POSITION_TO_SCREEN_RATIO, spawnRangeX - instance.Diameter / POSITION_TO_SCREEN_RATIO), -spawnRangeY + SPAWN_Y_OFFSET) * POSITION_TO_SCREEN_RATIO;
+        instance.CurrentSpeed *= gameSpeed;
+        activeBalloons.Add(instance);
+        return instance;
     }
 
     public void StartGame()

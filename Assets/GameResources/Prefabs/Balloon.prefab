@@ -100,8 +100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentSpeed: 0
-  minSpawnTime: 0.3
-  maxSpawnTime: 0.8
+  animator: {fileID: 9173672044520370140}
+  minSpawnTime: 0.8
+  maxSpawnTime: 1.2
   minMoveSpeed: 0.004
   maxMoveSpeed: 0.006
   diameter: 1
@@ -119,7 +120,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 6c3f0a3f0f5b155438fe62546b2d5524, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
