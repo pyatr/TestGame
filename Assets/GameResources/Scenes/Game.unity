@@ -292,6 +292,7 @@ GameObject:
   - component: {fileID: 41940784}
   - component: {fileID: 41940783}
   - component: {fileID: 41940782}
+  - component: {fileID: 41940786}
   m_Layer: 5
   m_Name: InputField (Legacy)
   m_TagString: Untagged
@@ -483,6 +484,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 41940780}
   m_CullTransparentMesh: 1
+--- !u!114 &41940786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41940780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6a63b1da25352e4892a8276f081b86d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterLimit: 24
 --- !u!1 &42762645
 GameObject:
   m_ObjectHideFlags: 0
@@ -2832,8 +2846,9 @@ MonoBehaviour:
   - {fileID: 1809847989984573976, guid: 8d155a63e9a2bc548b43f42dcc17013e, type: 3}
   - {fileID: 8302531274312035687, guid: baf6d4394e4a668429fdbe0bad2dfc6c, type: 3}
   - {fileID: 1809847989984573976, guid: 8d155a63e9a2bc548b43f42dcc17013e, type: 3}
+  - {fileID: 1809847989984573976, guid: 8d155a63e9a2bc548b43f42dcc17013e, type: 3}
   gameOverText: {fileID: 515738900}
-  gameSpeed: 3.4
+  gameSpeed: 3.1
   speedIncrementPerFrame: 0.03
   startLifeCount: 5
   scoreForExtraLife: 10000

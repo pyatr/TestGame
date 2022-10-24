@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     public static event Action<int> OnLifeCounterChanged = delegate { };
 
     private const float POSITION_TO_SCREEN_RATIO = 0.01f;
-    private const int SPAWN_Y_OFFSET = -32;
+    private const int SPAWN_Y_OFFSET = -16;
 
     private int Lives
     {
@@ -111,6 +111,7 @@ public class GameController : MonoBehaviour
     private IEnumerator GameRoutine()
     {
         yield return null;
+        earnedLives = 0;
         Lives = startLifeCount;
         while (isActiveAndEnabled)
         {
