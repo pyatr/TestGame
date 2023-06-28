@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SquishyBalloon : Balloon
+public class SquishyBalloon : AbstractBalloon
 {
     [SerializeField]
     private Vector2 maxDelta = new Vector2(16, 16);
 
     [SerializeField]
     private float maxTouchDistance = 16f;
-
-    protected override void OnUp(PointerEventData eventData)
-    {
-        //Ничего не делаем
-    }
 
     protected bool IsTouchNear(Touch touch)
     {

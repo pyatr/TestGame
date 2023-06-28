@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class RecordView : MonoBehaviour
 {
-    [SerializeField] private RecordController recordController;
     [SerializeField] private SingleRecordView recordViewPrefab;
     [SerializeField] private Transform contentTransform;
 
@@ -16,7 +15,7 @@ public class RecordView : MonoBehaviour
 
     private void OnEnable()
     {
-        List<KeyValuePair<string, int>> records = recordController.GetPlayersRecords();
+        List<KeyValuePair<string, int>> records = RecordController.GetPlayersRecords();
         noRecordsObject.SetActive(records.Count == 0);
         if (records.Count > 0)
         {

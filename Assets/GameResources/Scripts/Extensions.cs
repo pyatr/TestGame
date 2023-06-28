@@ -35,19 +35,6 @@ public static class Extensions
         }
     }
 
-    public static void MoveBy(this Transform originalTransform, float x = 0, float y = 0, float z = 0)
-    {
-        moveVector.x = originalTransform.localPosition.x + x;
-        moveVector.y = originalTransform.localPosition.y + y;
-        moveVector.z = originalTransform.localPosition.z + z;
-        originalTransform.localPosition = moveVector;
-    }
-
-    public static void MoveBy(this Transform originalTransform, Vector3 modPosition)
-    {
-        MoveBy(originalTransform, modPosition.x, modPosition.y, modPosition.z);
-    }
-
     /// <summary>
     /// Получить случайный объект из списка
     /// </summary>

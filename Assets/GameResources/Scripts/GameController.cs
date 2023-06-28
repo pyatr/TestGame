@@ -24,13 +24,13 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private ObjectPool<Balloon> balloonPool;
+    private ObjectPool<AbstractBalloon> balloonPool;
 
     private Coroutine gameCoroutine = null;
     private Coroutine speedGrowth = null;
 
     [SerializeField]
-    private List<Balloon> balloonPrefabTypes;
+    private List<AbstractBalloon> balloonPrefabTypes;
 
     [SerializeField]
     private GameObject gameOverText;
@@ -46,7 +46,7 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private int scoreForExtraLife = 10000;
 
-    private List<Balloon> activeBalloons = new List<Balloon>();
+    private List<AbstractBalloon> activeBalloons = new List<AbstractBalloon>();
 
     private int spawnRangeX;
     private int spawnRangeY;
@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        balloonPool = new ObjectPool<Balloon>(CreateNewBalloon);
+        balloonPool = new ObjectPool<AbstractBalloon>(CreateNewBalloon);
         startGameSpeed = gameSpeed;
         spawnRangeX = Screen.width / 4;
         spawnRangeY = Screen.height / 2;
@@ -65,15 +65,15 @@ public class GameController : MonoBehaviour
 
     private void OnEnable()
     {
-        Balloon.OnBalloonFlewAway += DecreaseLifeCounter;
-        Balloon.OnBalloonDestroyed += ClearBalloonList;
+        AbstractBalloon.OnBalloonFlewAway += DecreaseLifeCounter;
+        AbstractBalloon.OnBalloonDestroyed += ClearBalloonList;
         ScoreController.OnScoreChanged += GiveLifeFromScore;
     }
 
     private void OnDisable()
     {
-        Balloon.OnBalloonFlewAway -= DecreaseLifeCounter;
-        Balloon.OnBalloonDestroyed -= ClearBalloonList;
+        AbstractBalloon.OnBalloonFlewAway -= DecreaseLifeCounter;
+        AbstractBalloon.OnBalloonDestroyed -= ClearBalloonList;
         ScoreController.OnScoreChanged -= GiveLifeFromScore;
     }
 
@@ -87,17 +87,17 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void ClearBalloonList(Balloon balloon)
+    private void ClearBalloonList(AbstractBalloon balloon)
     {
         activeBalloons.Remove(balloon);
     }
 
-    private Balloon CreateNewBalloon()
+    private AbstractBalloon CreateNewBalloon()
     {
         return Instantiate(balloonPrefabTypes.GetRandomElement());
     }
 
-    private void DecreaseLifeCounter(Balloon balloon)
+    private void DecreaseLifeCounter(AbstractBalloon balloon)
     {
         Lives--;
         activeBalloons.Remove(balloon);
@@ -115,13 +115,13 @@ public class GameController : MonoBehaviour
         Lives = startLifeCount;
         while (isActiveAndEnabled)
         {
-            Balloon spawned = SpawnBalloon(balloonPool.Get());
+            AbstractBalloon spawned = SpawnBalloon(balloonPool.Get());
             yield return new WaitForSeconds(spawned.RandomSpawnTime);
         }
         StopGame();
     }
 
-    public Balloon SpawnBalloon(Balloon instance)
+    public AbstractBalloon SpawnBalloon(AbstractBalloon instance)
     {
         instance.transform.position = new Vector2(Random.Range(-spawnRangeX + instance.Diameter / POSITION_TO_SCREEN_RATIO, spawnRangeX - instance.Diameter / POSITION_TO_SCREEN_RATIO), -spawnRangeY + SPAWN_Y_OFFSET) * POSITION_TO_SCREEN_RATIO;
         instance.CurrentSpeed *= gameSpeed;

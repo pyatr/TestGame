@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class RecordController : MonoBehaviour
+public static class RecordController
 {
     private const string PLAYER_RECORDS_PREFS_KEY = "PlayerRecord";
 
     private const char RECORDS_DELIMITER = '-';
     private const char PLAYERS_DATA_DELIMITER = ':';
 
-    private string PlayerRecords => PlayerPrefs.GetString(PLAYER_RECORDS_PREFS_KEY, string.Empty);
+    private static string PlayerRecords => PlayerPrefs.GetString(PLAYER_RECORDS_PREFS_KEY, string.Empty);
 
-    public void SaveRecord(string playerName, int score)
+    public static void SaveRecord(string playerName, int score)
     {
         PlayerPrefs.SetString(PLAYER_RECORDS_PREFS_KEY, $"{PlayerRecords}-{playerName}:{score}");
     }
 
-    public List<KeyValuePair<string, int>> GetPlayersRecords()
+    public static List<KeyValuePair<string, int>> GetPlayersRecords()
     {
         List<KeyValuePair<string, int>> preparedRecords = new List<KeyValuePair<string, int>>();
         string records = PlayerRecords;

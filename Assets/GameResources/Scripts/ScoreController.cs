@@ -9,25 +9,19 @@ public class ScoreController : MonoBehaviour
 
     public int Score { private get; set; } = 0;
 
-    [SerializeField]
-    private RecordController recordController;
-
-    [SerializeField]
-    private PlayerProfile profile;
-
     private void OnEnable()
     {
         GameController.OnGameEnd += SaveScore;
-        Balloon.OnBalloonDestroyed += AddScore;
+        AbstractBalloon.OnBalloonDestroyed += AddScore;
     }
 
     private void OnDisable()
     {
         GameController.OnGameEnd -= SaveScore;
-        Balloon.OnBalloonDestroyed -= AddScore;
+        AbstractBalloon.OnBalloonDestroyed -= AddScore;
     }
 
-    private void AddScore(Balloon balloon)
+    private void AddScore(AbstractBalloon balloon)
     {
         AddScore(balloon.Score);
     }
@@ -40,7 +34,7 @@ public class ScoreController : MonoBehaviour
 
     private void SaveScore()
     {
-        recordController.SaveRecord(profile.PlayerName, Score);
+        RecordController.SaveRecord(PlayerProfile.PlayerName, Score);
         AddScore(-Score);
     }
 }

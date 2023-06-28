@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DoubleBalloon : Balloon
+public class DoubleBalloon : AbstractBalloon, IPointerUpHandler, IPointerDownHandler
 {
     [SerializeField]
-    private Balloon balloonSpawnedOnClick;
+    private AbstractBalloon balloonSpawnedOnClick;
 
     protected GameController game;
 
@@ -18,16 +18,20 @@ public class DoubleBalloon : Balloon
 
     private void SpawnBalloon(string spawnAnimation)
     {
-        Balloon b = Instantiate(balloonSpawnedOnClick);
+        AbstractBalloon b = Instantiate(balloonSpawnedOnClick);
         b.Animator.SetBool(spawnAnimation, true);
         game.SpawnBalloon(b);
         b.transform.position = transform.position;
     }
 
-    protected override void OnUp(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
         SpawnBalloon("AppearLeft");
         SpawnBalloon("AppearRight");
-        base.OnUp(eventData);
+        DestroySelf();
+    }
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        //OnPointerUp does not work without OnPointerDown implemented
     }
 }
